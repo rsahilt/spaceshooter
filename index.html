@@ -1,0 +1,565 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <title>Guardians of the Galaxy</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- 'Press Start 2P' -->
+    
+    <style>
+      body{
+        margin: 0 auto;
+        font-family: 'Heebo', sans-serif;
+        font-weight: 400;
+      }
+
+      header{
+        width: 100%;
+        height: 50px;
+        background-color: #2d2d2d;
+        display: flex;
+        flex-direction: row;
+        color: white;
+      }
+
+      header #detailbox{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        font-size: 17px;
+      }
+
+      header #detailbox #fullname_div{
+        width: 25%;
+        padding-left: 20px;
+        padding-top: 20px;
+      }
+
+      header #detailbox #address_div{
+        width: 50%;
+        text-align: center;
+        padding-top: 20px;
+      }
+
+      header #detailbox #username_div{
+        width: 25%;
+        display: flex;
+        flex-direction: row;
+       
+        
+      }
+
+      header #detailbox #username_div #username_box{
+        width: 75%;
+        text-align: right;
+        display: flex;
+        flex-direction: row;
+      }
+
+      #username_box #charimage{
+        width: 50px;
+        height: 50px;
+      }
+
+      #username_box #user_name{
+        width: 50%;
+        height: 50px;
+        padding-top: 20px;
+        text-align: left;
+        padding-left: 10px;
+      }
+
+      header #detailbox #username_div #logout_btn{
+        width: 25%;
+        padding-top: 18px;
+      }
+
+      .fa
+      {
+        font-size:26px; 
+        color: #F7CAC9; 
+        padding-left: 10px;
+      }
+
+      .fa:hover
+      {
+        font-size:26px; 
+        color:#947978; 
+        padding-left: 10px;
+      }
+
+      /* canvas */
+      #canvas_game{
+        background: url("space.png");
+        background-repeat: repeat;
+      }
+
+    </style>
+  
+  </head>
+
+  <body>
+    <header>
+
+      <div id="detailbox">
+
+        <!-- for displaying the full name  -->
+        <div id="fullname_div"></div>
+
+        <!-- for displaying the address -->
+        <div id="address_div"></div>
+
+        
+        <div id="username_div">
+
+          <div id="username_box">
+            <!-- for displaying the character -->
+            <div id="charimage"></div>
+            <!-- for displaying the username -->
+            <div id="user_name"></div>
+          </div>
+
+          <div id="logout_btn">
+
+            <a href="#" title="Logout" id="logout" style="margin-top: 20px;">
+              <i class="fa fa-sign-out" id="logout-hover">
+              </i>
+            </a>
+
+          </div>
+
+        </div>
+
+        
+      </div>
+
+    </header>
+
+    <canvas id="canvas_game"></canvas>
+
+    <script>
+      //global variables
+      let showname, showaddress, showdata, logout_button, show_avatar;
+
+      //alien 1
+      let alien1_posx = 20;
+      let alien1_posy = 20;
+
+      let alien1_speedx = 5;
+      let alien1_speedy = 3;
+
+      //alien 2
+      let alien2_posx = 380;
+      let alien2_posy = 20;
+
+      let alien2_speedx = 5;
+      let alien2_speedy = 3;
+
+      //alien3
+      let alien3_posx = 550;
+      let alien3_posy = 20;
+
+      let alien3_speedx = 5;
+      let alien3_speedy = 3;
+
+      //alien4
+      let alien4_posx = 850;
+      let alien4_posy = 20;
+
+      let alien4_speedx = 5;
+      let alien4_speedy = 3;
+
+
+      //alien5
+      let alien5_posx = 1050;
+      let alien5_posy = 20;
+
+      let alien5_speedx = 5;
+      let alien5_speedy = 3;
+
+
+
+
+      //canvas
+      let cnvs, ctx, my_interval, bullet_interval;
+      //for bullet; will be set as the same as that of the rocket so that the buller hide
+      //behinds the rocket
+      
+      let posy_bullet = 570;
+      let posx_bullet = 0;
+
+
+      //we just need to bullet move upwards, so only one speed in y-axis is required
+      const speedy_bullet = 15;
+
+
+      const mouse_position = {
+        mousex: ''
+      };
+
+      let mouse_horizontal;
+      
+      //adding image in canvas
+
+      //1. Rocket / Shooter
+      let cnvs_rocket = new Image();
+      cnvs_rocket.src = "rocket.png";
+
+      //2. Aliens
+      let cnvs_alien = new Image();
+      cnvs_alien.src = "alien1.png";
+
+      let cnvs_alien2 = new Image();
+      cnvs_alien2.src = "alien2.png";
+
+      let cnvs_alien3 = new Image();
+      cnvs_alien3.src = "alien3.png";
+
+      let cnvs_alien4 = new Image();
+      cnvs_alien4.src = "alien4.png";
+
+      let cnvs_alien5 = new Image();
+      cnvs_alien5.src = "alien5.png";
+    
+      //onload function
+      onload = function(){
+        mouse_horizontal = 0;
+        //getting the elements
+        showname = document.querySelector("#fullname_div");
+        showaddress = document.querySelector("#address_div");
+        showdata = document.querySelector("#user_name");
+        show_avatar = document.querySelector("#charimage");
+
+        //logout button
+        logout_button = document.querySelector("#logout_btn");
+
+        //getting the full name from the local storage
+        if(localStorage.getItem("fullname")){
+          showname.innerHTML = "Welcome, " + localStorage.getItem("fullname");
+        }
+        else{
+          showname.innerHTML = "N/A";
+        }
+
+        //getting the address from the local storage
+        if(localStorage.getItem("address")){
+          showaddress.innerHTML = localStorage.getItem("address");
+        }
+        else{
+          showaddress.innerHTML = "N/A";
+        }
+
+        //getting the username from the local storage
+        if(localStorage.getItem("username")){
+          showdata.innerHTML = localStorage.getItem("username");
+        }
+        else{
+          showdata.innerHTML = "N/A";
+        }
+
+        //getting the avatar from the local storage
+        if(localStorage.getItem("avatar")){
+        let avatarFilename = localStorage.getItem("avatar") + ".png";
+
+        // Creating an img element
+        let avatarImg = document.createElement("img");
+
+        
+        // Setting the src attribute to the retrieved avatar filename
+        avatarImg.src = avatarFilename;
+
+        avatarImg.style.width="50px";
+        avatarImg.style.height="50px";
+
+        // Appending the img element to the avatarbox
+        show_avatar.appendChild(avatarImg);
+        }
+
+        else{
+          show_avatar.innerHTML = "N/A";
+        }
+
+
+        //detecting click on the logout button
+        logout_button.addEventListener("click", function(){
+          eraseStoredData();
+        });
+
+
+         //function to delete the local storage
+        function eraseStoredData(){
+          for(let i = localStorage.length; i >= 0; i--){
+            localStorage.removeItem(localStorage.key(i));
+          }
+            alert("Logout Sucessfull");
+            window.location.href = "login.html";
+        };//eraseStoreData() closed
+        
+
+
+        //////////////////////////  C A N V A S  ////////////////////////////////
+        
+        //getting the canvas element
+        cnvs = document.querySelector("#canvas_game");
+
+
+        //setting the canvas size to double that we want
+        cnvs.width = window.innerWidth;
+        cnvs.height = window.innerHeight;
+      
+
+       
+        //getting context of the canvas
+        ctx = cnvs.getContext('2d');  
+
+        
+        //canvas rocket image
+        ctx.drawImage(cnvs_rocket, 600, 570);  
+
+        //canvas alien image
+        ctx.drawImage(cnvs_alien, alien1_posx, alien1_posy);
+        ctx.drawImage(cnvs_alien2, alien2_posx, alien2_posy);
+        ctx.drawImage(cnvs_alien3, alien3_posx, alien3_posy);
+        ctx.drawImage(cnvs_alien4, alien4_posx, alien4_posy);
+        ctx.drawImage(cnvs_alien5, alien5_posx, alien5_posy);
+
+        
+
+        // get the bounding rectangle of the canvas. 
+			  bounding_rect = cnvs.getBoundingClientRect();
+
+        //interval for animation
+        my_interval = animate();
+
+
+        //getting the position of the mouse inside tha canvas
+        cnvs.addEventListener("mousemove",function(event){
+          mouse_position.mousex = event.clientX - bounding_rect.left;
+        });
+   
+      }; //onload closed
+
+
+      //function to move the rokcet inside the canvas
+      function animate() {
+        //clear the canvas to detect mouse movement
+        ctx.clearRect(0, 0, bounding_rect.width, bounding_rect.height);
+
+        //setting the rocket's position with that of the mouse's positions
+        mouse_horizontal = mouse_position.mousex;
+
+        //loading the rocket image, at the horizontal position of viewport - rocket width so
+        //that the image does not overflows the viewport
+        ctx.drawImage(cnvs_rocket, mouse_horizontal - cnvs_rocket.width, 570);
+
+        //loading the alien image in the canvas
+        ctx.drawImage(cnvs_alien, alien1_posx, alien1_posy);
+        ctx.drawImage(cnvs_alien2, alien2_posx, alien2_posy);
+        ctx.drawImage(cnvs_alien3, alien3_posx, alien3_posy);
+        ctx.drawImage(cnvs_alien4, alien4_posx, alien4_posy);
+        ctx.drawImage(cnvs_alien5, alien5_posx, alien5_posy);
+
+
+        //game text in canvas
+        ctx.font = "bold 72px 'Press Start 2P'";
+				ctx.fillStyle = "#900";
+				ctx.fillText("SCAM GAME",400,500);
+				ctx.strokeStyle = "#000";
+				ctx.lineWidth = 3;
+				ctx.strokeText("SCAM GAME",400,500);
+
+
+        //instructions text
+        ctx.font = "bold 20px 'Press Start 2P'";
+				ctx.fillStyle = "#900";
+				ctx.fillText("(Move the mouse left and right and kill the invaders)", 170, 520);
+				ctx.strokeStyle = "#000";
+				ctx.lineWidth = 2;
+
+
+        // creating rocket's bullet
+        //the bullet is placed horizontal-40 position of the mouse/rocket
+        ctx.fillStyle = "#e2e0e5";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 1;
+        ctx.fillRect(posx_bullet - 44, posy_bullet, 8, 30);
+        ctx.strokeRect(posx_bullet - 44, posy_bullet, 8, 30);
+
+
+        //moving the bullet in upwards direction and bringing back to the intial position with the rocket
+        posy_bullet -= speedy_bullet;
+        if (posy_bullet < 0) {
+          posx_bullet = mouse_horizontal;
+          posy_bullet = 570;
+        }
+       
+
+
+        //HORIZONTAL MOVEMENTS
+        //movement for alien1
+        alien1_posx += alien1_speedx;
+        if(alien1_posx == 700){
+          alien1_speedx = -alien1_speedx;
+        }
+        if(alien1_posx == 0){
+          alien1_speedx = -alien1_speedx;
+        }
+
+        //movement for alien2
+        alien2_posx -= alien2_speedx;
+        if(alien2_posx == 20){
+          alien2_speedx = -alien2_speedx;
+        }
+        if(alien2_posx == 700){
+          alien2_speedx = -alien2_speedx;
+        }
+
+
+        //movement for alien3
+        alien3_posx -= alien3_speedx;
+        if(alien3_posx == 30){
+          alien3_speedx = -alien3_speedx;
+        }
+        if(alien3_posx == 900){
+          alien3_speedx = -alien3_speedx;
+        }
+
+        //movement for alien4
+        alien4_posx += alien4_speedx;
+        if(alien4_posx == 1280){
+          alien4_speedx = -alien4_speedx;
+        }
+        if(alien4_posx == 230){
+          alien4_speedx = -alien4_speedx;
+        }
+
+
+        //movement for alien5
+        alien5_posx -= alien5_speedx;
+        if(alien5_posx == 400){
+          alien5_speedx = -alien5_speedx;
+        }
+        if(alien5_posx == 1280){
+          alien5_speedx = -alien5_speedx;
+        }
+
+        // calling the animate function
+        requestAnimationFrame(animate);
+
+        //function to check collision with the alien
+        collisionDetection();
+
+      }//animate() closed
+
+      function collisionDetection() {
+        //detecting collision with alien5
+        if(posy_bullet <= alien5_posy + cnvs_alien.height &&
+           posx_bullet >= alien5_posx &&
+           posx_bullet <= alien5_posx + cnvs_alien.width){
+          //setting the position of the alien5 out of the canvas
+          alien5_posx = -100;
+          alien5_posy = -100;
+
+          // Resetting the bullet position with the rocket's position
+          posx_bullet = mouse_horizontal;
+          posy_bullet = 570;
+        } //if for alien1 closed
+
+
+        //detecting collision with alien4
+        if(posy_bullet <= alien4_posy + cnvs_alien.height &&
+           posx_bullet >= alien4_posx &&
+           posx_bullet <= alien4_posx + cnvs_alien.width){
+          //setting the position of the alien4 out of the canvas
+          alien4_posx = -100;
+          alien4_posy = -100;
+
+          // Resetting the bullet position with the rocket's position
+          posx_bullet = mouse_horizontal;
+          posy_bullet = 570;
+        }//if for alien2 closed
+
+
+        //detecting collision with alien3
+        if(posy_bullet <= alien3_posy + cnvs_alien.height &&
+           posx_bullet >= alien3_posx &&
+           posx_bullet <= alien3_posx + cnvs_alien.width){
+          //setting the position of the alien3 out of the canvas
+          alien3_posx = -100;
+          alien3_posy = -100;
+
+          // Resetting the bullet position with the rocket's position
+          posx_bullet = mouse_horizontal;
+          posy_bullet = 570;
+        }//if for alien3 closed
+
+
+        //detecting collision with alien2
+        if(posy_bullet <= alien2_posy + cnvs_alien.height &&
+           posx_bullet >= alien2_posx &&
+           posx_bullet <= alien2_posx + cnvs_alien.width){
+          //setting the position of the alien2 out of the canvas
+          alien2_posx = -100;
+          alien2_posy = -100;
+
+          // Resetting the bullet position with the rocket's position
+          posx_bullet = mouse_horizontal;
+          posy_bullet = 570;
+        }//if for alien4 closed
+
+
+        //detecting collision with alien1
+        if(posy_bullet <= alien1_posy + cnvs_alien.height &&
+           posx_bullet >= alien1_posx &&
+           posx_bullet <= alien1_posx + cnvs_alien.width){
+          //setting the position of the alien1 out of the canvas
+          alien1_posx = -100;
+          alien1_posy = -100;
+
+          // Resetting the bullet position with the rocket's position
+          posx_bullet = mouse_horizontal;
+          posy_bullet = 570;
+        }//if for alien5 closed
+
+        //if all the enemies are killed, stop the bullet and ask the user to restart the game
+        if(alien1_posx < -40 && 
+           alien2_posx < -40 && 
+           alien3_posx < -40 &&
+           alien4_posx < -40 &&
+           alien5_posx < -40){
+
+            //removing the bullet out of the canvas
+            posx_bullet = -100;
+            posy_bullet = -100;
+
+            //clearing the canvas 
+            ctx.clearRect(0, 0, bounding_rect.width, bounding_rect.height);
+        
+            //setting a new text after the game is over
+            ctx.font = "bold 50px 'Press Start 2P'";
+            ctx.fillStyle = "#900";
+            ctx.fillText("Thanks Pete....STAR LORD", 100, 400);
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 3;
+            ctx.strokeText("Thanks Pete....STAR LORD", 100, 400);
+          }
+      };//collision detection function closed
+
+
+    </script>
+
+  </body>
+</html>

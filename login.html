@@ -1,0 +1,263 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <title>Login</title>
+    <meta charset="utf-8" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+
+    
+    <style>
+      *{
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      body{
+        font-family: Tahoma, sans-serif;
+        margin: 0 auto;
+        font-family: 'Heebo', sans-serif;
+        font-weight: 400;
+      }
+
+      #login-container{
+        width: 380px;
+        height: 600px;
+        background-color: black;
+        margin-top: 100px;
+        -webkit-box-shadow: 0 0 10px red;
+        box-shadow: 0 0 10px red;
+      }
+
+      h1{
+        font-size: 1.7em;
+        color: white;
+        padding: 20px;
+      }
+
+      span#login_txt{
+        padding-left: 20px;
+      }
+
+      form{
+        padding: 20px;
+        color: white;
+      }
+
+      form label{
+        font-size: 14.7px;
+        padding-left: 6px;
+        
+      }
+
+      form input{
+        width: 90%;
+        padding: 10px 10px;
+        border-radius: 5px;
+        border: 2px solid #666666;
+        font-size: 14px;
+        background-color: #323232;
+        color: white;
+        border-collapse: collapse;
+        outline: #993299;
+      }
+
+      form input:focus{
+        border: 2px solid #993299;
+        
+       
+      }
+
+      button#submitform{
+        padding: 10px 10px;
+        font-family: 'Heebo', sans-serif;
+        font-weight: 700;
+        font-size: 1em;
+        cursor: pointer;
+        background-color: #993299;
+        border: none;
+        border-radius: 5px;
+        width: 87%;
+        margin-left: 20px;
+        color: white;
+      }
+
+      button#submitform:hover{
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+      }
+
+      span#signup_txt{
+        color: #999999;
+        padding-left: 65px;
+      }
+
+      #draghere{
+        border: 2px solid #993299;
+      }
+
+    </style>
+  
+  </head>
+
+  <body>
+    <div id="login-container">
+      <h1>Login</h1>
+      <span id="login_txt" style="color: #999999;">Already have an account? Log in</span>
+
+      <form action="" method="post" id="login-form">
+
+        <p>
+          <label for="fullname">Full Name</label><br>
+          <input type="text" id="fullname" name="fullname">
+        </p><br>
+        
+
+        <p>
+          <label for="username">Username</label><br>
+          <input type="text" id="username" name="username">
+        </p><br>
+
+        <p>
+          <label for="address">Address</label><br>
+          <input type="text" id="address" name="address">
+
+          <input type="hidden" id="avatar" name="avatar">
+        </p><br>
+
+        <p>
+          <label for="character">Drag to select your avatar</label><br>
+          
+          <img src="drag.png" alt="drag your character here" width="58px" height="58px"
+               id="draghere"
+               ondragover="draggedOverIt(event);"
+               ondragleave="changeBack(event);"
+               ondrop="dropIt(event);">
+
+
+          &nbsp; &nbsp; &nbsp; &nbsp;
+
+
+          <img src="girl.png" alt="girl character" width="58" height="58" 
+               id="girl"
+               draggable="true"
+               ondragstart="dragIt(event);">
+
+
+
+          <img src="boy.png" alt="boy character" width="58" height="58" 
+               id="boy"
+               draggable="true"
+               ondragstart="dragIt(event);">
+        </p>
+
+        
+        
+      </form>
+
+      <button id="submitform">Login</button>
+
+      <p>
+        <br>
+        <span id="signup_txt">Don't have an account? 
+          <a href="#" id="signup_hover" style="text-decoration: none; color: white;">Sign Up</a>
+      </p>
+      
+    </div>
+
+
+    <script>
+      //global variable
+      let storebutton;
+
+      let char_box;
+
+      //onload function
+      onload = function(){
+        //getting the  button and divs
+        storebutton = document.querySelector("#submitform");
+
+        char_box = document.querySelector("#draghere");
+
+        //detecting the click on the button, call a function
+        storebutton.addEventListener("click", function(){
+          storeUserData();
+        });//end click eventlistener
+
+        //detect when the user presses, 'ENTER'  key
+        document.addEventListener('keypress', function(event){
+          let pressed_key = event.key;
+          if(pressed_key == 'Enter'){
+            storeUserData();
+          }
+          
+        });
+      };//end onload 
+
+      //function to store the data into the local storage
+      function storeUserData(){
+        //check for the type of the storage
+        if(typeof(Storage) !== "undefined"){
+          let key, value;
+          let form_data = document.querySelector("#login-form");
+
+          //looping through the elements of the form
+          for(let i = 0; i < form_data.elements.length; i++){
+            //check if any field in empty
+            if(form_data.elements[i].value == ''){
+              alert("Please fill all the information");
+              return;
+            }
+            key = form_data.elements[i].id;
+            value = form_data.elements[i].value;
+
+            //save these key/value to the local storage in the browser
+            localStorage.setItem(key,value);
+          }
+          //check to see the localstorage count to be as many as form items atleast
+          if(localStorage.length >= form_data.elements.length){
+            alert("Login Sucessfull");
+            window.location.href = 'index.html';
+          }
+          else{
+            alert("Login Failed. Please fill all the information and try again.");
+          }
+        }
+        else{
+          alert("You browser is not compatible with local storage. Try updating your browser.");
+        }
+      };//end of storeUserData();
+
+      //function when the user starts dragging the image
+      function dragIt(evt){
+        evt.dataTransfer.setData("text", evt.target.id);
+      };//functoin dragIt(ends)
+
+
+      //function when the user drags to image over the image holder div
+      function draggedOverIt(evt){
+        event.preventDefault();
+      };//function draggedOverIt ends
+
+      //function for when the user drop the image by dragging over to the image holder div
+      function dropIt(evt) {
+        evt.preventDefault();
+        var data = evt.dataTransfer.getData("text");
+        console.log(data);
+        document.getElementById("draghere").src = data + '.png';
+        document.getElementById("avatar").value = data;
+      }//function dropIt ends
+
+
+    </script>
+
+
+
+ 
+  </body>
+  
+  
+
+</html>
